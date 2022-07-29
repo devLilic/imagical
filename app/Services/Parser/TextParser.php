@@ -49,13 +49,6 @@ class TextParser implements ParserInterface {
         return preg_replace("/TITLU: |TITLU /", "", strtoupper($title));
     }
 
-    public function getContent($slug)
-    {
-        $html = $this->fragment($this->code, "<a name=" . $slug . ">", "<FONT 000000 SIZE=-2>");
-        $content = $this->fragment($html, '<p>');
-        return trim(strip_tags($content));
-    }
-
     public function getTitle()
     {
         if (strlen($this->code) > 10) {
@@ -64,48 +57,6 @@ class TextParser implements ParserInterface {
             $title_2 = preg_replace("/TITLU:/", "", $rows[1]);
             return strlen($title_1) < strlen($title_2) ? $title_1 : $title_2;
         }
-
         return '';
     }
-
-    public function clearSlugs()
-    {
-        $patterns_to_remove = ["/^MD/", "/^RO /", "/-BETA$/", "/OFF-SNC$/", "/OFF-OFF$/", "/DUPLEX/"];
-
-        return trim(preg_replace($patterns_to_remove, "", $this->code));
-    }
-
-    /**
-     * @param $item
-     * @param bool $accepted
-     * @return bool
-     */
-    protected function restrictedSlug($item): bool
-    {
-        $restricted_slugs = [
-            'GENERIC  IN',
-            'GENERIC IN',
-            'HEADLINES-INTRO',
-            'HEADLINES-BETA',
-            'PA-INTRO',
-            'GENERIC OUT',
-            'TEASE',
-            'LIVE',
-//            'INTRO',
-//            'INRO',
-            'METEO',
-            'CURS VALUTAR'
-        ];
-
-        foreach ($restricted_slugs as $slug) {
-
-            // if itemText contains one of restricted titles
-            if (preg_match("/$slug/", $item)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
 }

@@ -8,7 +8,7 @@ export default function ArticleWithImages({article}) {
 
     const [selectedImage, setSelectedImage] = useState({})
 
-    function onChangeSelectedImage(e){
+    function handleChangeSelectedImage(e){
         let img = article.images.items.filter(image => image.image.thumbnailLink === e.target.currentSrc);
         setSelectedImage({
             link: img[0].link,
@@ -35,10 +35,11 @@ export default function ArticleWithImages({article}) {
                                 </div>
                                 <div className="flex flex-wrap">
                                     {article.images.items.map((image) => (
-                                        <Image image={image} key={image.link} onChangeSelectedImage={onChangeSelectedImage}/>
+                                        <Image image={image} key={image.link} onChangeSelectedImage={handleChangeSelectedImage}/>
                                     ))}
                                 </div>
                             </div>
+
                             <SelectedImage image={selectedImage} />
                         </div>
                     </>

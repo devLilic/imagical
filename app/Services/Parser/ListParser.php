@@ -16,7 +16,6 @@ class ListParser implements ParserInterface {
         // remove tags and transform to a list of titles
         $list_items = collect(explode("\r\n", strip_tags($li_html)));
 
-
         // remove unnecessary titles like GENERIC, TEASE...
         $list_items = $list_items->filter(fn ($item) => !$this->is_restricted($item));
 
@@ -43,8 +42,15 @@ class ListParser implements ParserInterface {
 
     public function clean($title): string
     {
-        $patterns_to_remove = ["/^MD/", "/^RO /", "/-INTRO$/", "/-BETA$/", "/OFF$/", "/OFF-SNC$/", "/OFF-OFF$/", "/DUPLEX/"];
-
+        $patterns_to_remove = [
+            "/^MD\s?/",
+            "/^RO\s?/",
+            "/-{1}INTRO|BETA$/",
+            "/OFF$/",
+            "/OFF-SNC$/",
+            "/OFF-OFF$/",
+            "/DUPLEX/"
+        ];
         return trim(preg_replace($patterns_to_remove, "", $title));
     }
 

@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
 
-function ImagePreview(props) {
+export default function ImagePreview({image, edit}) {
     const [imageParams, setImageParams] = useState({
         aspect: false,
         format: false,
@@ -45,14 +45,20 @@ function ImagePreview(props) {
     }
 
     function drawPreviewBlock() {
-        const imgClipPath = props.image.cropped ? {clipPath: `polygon(${props.image.section.x}% ${props.image.section.y}%,${props.image.section.width + props.image.section.x}% ${props.image.section.y}%,${props.image.section.width + props.image.section.x}% ${props.image.section.height + props.image.section.y}%,${props.image.section.x}% ${props.image.section.height + props.image.section.y}%)`} : {}
-        return props.image.url.trim() === '' ?
+        const imgClipPath = image.cropped ?
+            {clipPath: `polygon(${image.section.x}% ${image.section.y}%,
+            ${image.section.width + image.section.x}% ${image.section.y}%,
+            ${image.section.width + image.section.x}% ${image.section.height + image.section.y}%,
+            ${image.section.x}% ${image.section.height + image.section.y}%)`}
+            :
+            {}
+        return image.url.trim() === '' ?
             '' :
-            (urlPattern.test(props.image.url)) ?
+            (urlPattern.test(image.url)) ?
                 (
                     <>
                         <div className="text-xs text-white flex flex-col items-center mr-3 justify-around mt-2">
-                            <span className={spanStyle(imageParams.aspect || props.image.cropped)}
+                            <span className={spanStyle(imageParams.aspect || image.cropped)}
                                   title="Aspect ratio">16:9</span>
                             <span className={spanStyle(imageParams.format)}
                                   title="Accepted formats: JPG, JPEG or PNG">IMG</span>
@@ -63,11 +69,11 @@ function ImagePreview(props) {
                             <div className='h-full'>
                                 <img
                                     ref={imgRef}
-                                    src={props.image.url}
+                                    src={image.url}
                                     className="h-full"
                                     alt="preview"
                                     onLoad={applyFilters}
-                                    onClick={props.edit}
+                                    onClick={edit}
                                     title={'title'}
                                     style={imgClipPath}
                                 />
@@ -84,5 +90,3 @@ function ImagePreview(props) {
         </div>
     );
 }
-
-export default ImagePreview;

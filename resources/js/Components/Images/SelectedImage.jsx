@@ -1,8 +1,11 @@
 import React from 'react';
+import ImagePreview from "@/Components/Images/ImagePreview";
 
 export default function SelectedImage({image}) {
+    console.log(image)
     return (
         <div className="w-4/12 ml-2 pt-8">
+
             {image.link && (<div>
                 <img className="w-full" src={image.link} alt=""/>
                 <div className="mt-2">

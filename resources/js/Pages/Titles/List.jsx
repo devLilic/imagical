@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Authenticated from '@/Layouts/Authenticated';
 import {Head, useForm} from '@inertiajs/inertia-react';
 import Article from "@/Components/Articles/Article";
+import Button from "@/Components/Button";
 
 export default function List(props) {
     const [articles, setArticles] = useState(props.articles)
@@ -66,9 +67,9 @@ export default function List(props) {
             errors={props.errors}
         >
             <Head title="List of titles"/>
-            <div className="py-12 relative">
+            <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <form className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <form className="overflow-hidden shadow-sm sm:rounded-lg">
                         {articles && (
                             articles.map(article => (
                                 <Article key={article.search_slug}
@@ -79,11 +80,13 @@ export default function List(props) {
                             ))
                         )}
                     </form>
+                    <button disabled={props.articles.length === 0}
+                            onClick={searchImages}
+                            className="border px-7 py-2 rounded-lg bg-blue-500 text-white disabled:bg-blue-200">Search
+                    </button>
                 </div>
-                <button disabled={props.articles.length === 0}
-                        onClick={searchImages}
-                        className="fixed top-1/2 right-10 -translate-y-1/2 border px-7 py-2 rounded-lg bg-blue-500 text-white disabled:bg-blue-200">Search
-                </button>
+
+
             </div>
 
         </Authenticated>

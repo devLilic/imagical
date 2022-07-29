@@ -9,8 +9,8 @@ class Article {
     public string $title; // Public title. Get it from the BETA/OFF part of the text
     public string $content;
     public string $type;
-    public string $other_title="";
-    public string $search_by="slug";
+    public string $other_title = "";
+    public string $search_by = "slug";
 
     public function __construct($search, $slugs)
     {
@@ -21,10 +21,8 @@ class Article {
 
     protected function findType(): void
     {
-        $items = array_filter($this->slugs, function ($slug)
-        {
-            return preg_match("/OFF$|OFF-SNC|OFF-OFF/", $slug);
-        });
+        // if slugs contains OFF then type will be off
+        $items = array_filter($this->slugs, fn($slug) => preg_match("/OFF$|OFF-SNC|OFF-OFF/", $slug));
         $this->type = (count($items) > 0) ? "OFF" : "BETA";
     }
 

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Checkbox from "@/Components/Checkbox";
 import Input from "@/Components/Input";
+import Label from "@/Components/Label";
 
 
 export default function Article({article, changeSearchOption, onChangeOtherInputValue}) {
@@ -31,7 +32,7 @@ export default function Article({article, changeSearchOption, onChangeOtherInput
                 </div>
                 <div className="w-5/12 bg-white">
                     <div>
-                        <label className='flex justify-between items-center'>
+                        <Label className='flex justify-between items-center'>
                             <div className="p-2">{article.search_slug}</div>
                             <div className="px-2">
                                 <Checkbox name={article.search_slug+"_slug"}
@@ -39,8 +40,8 @@ export default function Article({article, changeSearchOption, onChangeOtherInput
                                           value={article.search_slug}
                                           handleChange={e => selectSearchOption(e, 'slug')}/>
                             </div>
-                        </label>
-                        <label className='flex justify-between items-center'>
+                        </Label>
+                        <Label className='flex justify-between items-center'>
                             <div className="p-2">{article.title}</div>
                             <div className="px-2">
                                 <Checkbox name={article.search_slug+"_title"}
@@ -48,8 +49,8 @@ export default function Article({article, changeSearchOption, onChangeOtherInput
                                           checked={search_by === 'title'}
                                           handleChange={e => selectSearchOption(e, 'title')}/>
                             </div>
-                        </label>
-                        <label className='flex justify-between items-center'>
+                        </Label>
+                        <Label className='flex justify-between items-center'>
                             <div className="p-2 w-full">
                                 <Input name={article.search_slug+"_input"}
                                     className="w-6/12 text-xs disabled:bg-gray-100"
@@ -63,7 +64,7 @@ export default function Article({article, changeSearchOption, onChangeOtherInput
                                           checked={search_by === 'other'}
                                           handleChange={e => selectSearchOption(e, 'other')}/>
                             </div>
-                        </label>
+                        </Label>
                     </div>
                 </div>
 
