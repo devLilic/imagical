@@ -1,5 +1,5 @@
 import React from "react";
-import UploadSvg from "@/Components/UploadSvg";
+import UploadSvg from "@/Components/UI/UploadButton/UploadSvg";
 
 export default function UploadButton({handleChange}) {
     return (

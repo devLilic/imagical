@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import Authenticated from '@/Layouts/Authenticated';
 import {Head} from '@inertiajs/inertia-react';
-import Button from "@/Components/Button";
-import Input from "@/Components/Input";
+import Button from "@/Components/UI/FormElements/Button";
+import Input from "@/Components/UI/FormElements/Input";
 
 export default function Dashboard(props) {
     const [searchQuery, setSearchQuery] = useState('');

@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\FileUploadRequest;
 use Facades\App\Services\Articles\ArticlesService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class TitlesController extends Controller {
@@ -16,7 +14,7 @@ class TitlesController extends Controller {
 //        $content = Storage::disk('test')->get('1300.HTM');
 //        $articles = ArticlesService::generate($content);
 
-        return Inertia::render('Titles/Index', [
+        return Inertia::render('Titles/Upload', [
 //            'articles' => $articles
         ]);
     }
@@ -55,12 +53,12 @@ class TitlesController extends Controller {
                 'images' => $response
             ];
         }
-        return Inertia::render('Results/Index', [
+        return Inertia::render('Results/Results', [
             'articles' => $results
         ]);
     }
 
-    public function testData()
+    protected function testData()
     {
         return [
             "kind" => "customsearch#search",

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Authenticated from '@/Layouts/Authenticated';
 import {Head, useForm} from '@inertiajs/inertia-react';
 import Article from "@/Components/Articles/Article";
-import Button from "@/Components/Button";
+import Button from "@/Components/UI/FormElements/Button";
 
 export default function List(props) {
     const [articles, setArticles] = useState(props.articles)
@@ -85,8 +85,6 @@ export default function List(props) {
                             className="border px-7 py-2 rounded-lg bg-blue-500 text-white disabled:bg-blue-200">Search
                     </button>
                 </div>
-
-
             </div>
 
         </Authenticated>

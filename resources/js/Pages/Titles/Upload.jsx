@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import Authenticated from '@/Layouts/Authenticated';
 import {Head, useForm} from '@inertiajs/inertia-react';
-import UploadButton from "@/Components/UploadButton";
-import DisplayError from "@/Components/DisplayError";
+import UploadButton from "@/Components/UI/UploadButton/UploadButton";
+import DisplayError from "@/Components/UI/DisplayError";
 
-export default function Index({auth, errors}) {
+export default function Upload({auth, errors}) {
     const [error, setError] = useState('')
     const [ready, setReady] = useState(false);
     const {data, setData, post} = useForm({

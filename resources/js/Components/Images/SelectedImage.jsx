@@ -2,7 +2,6 @@ import React from 'react';
 import ImagePreview from "@/Components/Images/ImagePreview";
 
 export default function SelectedImage({image}) {
-    console.log(image)
     return (
         <div className="w-4/12 ml-2 pt-8">
 
