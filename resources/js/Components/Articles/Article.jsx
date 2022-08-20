@@ -1,71 +1,105 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Checkbox from "@/Components/UI/FormElements/Checkbox";
-import Input from "@/Components/UI/FormElements/Input";
 import Label from "@/Components/UI/FormElements/Label";
 import Card from "@/Components/UI/Card";
+import ArticlesContext from "@/Store/ArticleStore/articles-context";
+import UploadButton from "@/Components/UI/UploadButton/UploadButton";
 
 
-export default function Article({article, changeSearchOption, onChangeOtherInputValue}) {
-    const [search_by, set_search_by] = useState('slug')
-    const [input_value, set_input_value] = useState('');
-    const [disable_input, set_disable_input] = useState(true);
+export default function Article({article, handleModal}) {
 
-    function selectSearchOption(e, search_by) {
-        set_disable_input(search_by !== 'other')
+    const articlesCtx = useContext(ArticlesContext);
 
-        if (e.target.checked) {
-            set_search_by(search_by)
-        }
-        changeSearchOption(article.search_slug, search_by)
+    const [customTitle, setCustomTitle] = useState('')
+
+    const showIntro = (id) => {
+        articlesCtx.showIntro(id)
     }
 
-    function on_other_value_change(e) {
-        set_input_value(e.target.value);
-        onChangeOtherInputValue(article.search_slug, e.target.value)
+    const editSearchOption = (id, search_type, search_value) => {
+        articlesCtx.editSearch(id, search_type, search_value)
+    }
+
+    const editArticle = () => {
+        articlesCtx.setArticleToEdit(article.id);
+        handleModal()
+    }
+
+    const removeWallpaper = () => {
+        articlesCtx.removeWallpaper(article.id)
     }
 
     return (
         <Card>
-            <div className='w-7/12 px-2'>
-                <h3 className="py-2 font-bold">{article.search_slug} ({article.type})</h3>
-                <p className='mt-1'>{article.content}</p>
+            <div className='px-3 py-2 text-sm font-bold text-center bg-blue-500 text-white'>
+                {article.search.value} ({article.type})
+                <div className="text-xs">{article.id}</div>
             </div>
-            <div className="w-5/12 bg-white">
-                <div>
-                    <Label className='flex justify-between items-center'>
-                        <div className="p-2 w-full">{article.search_slug}</div>
-                        <div className="px-2">
-                            <Checkbox name={article.search_slug + "_slug"}
-                                      checked={search_by === 'slug'}
-                                      value={article.search_slug}
-                                      handleChange={e => selectSearchOption(e, 'slug')}/>
-                        </div>
-                    </Label>
-                    <Label className='flex justify-between items-center'>
-                        <div className="p-2 w-full">{article.title}</div>
-                        <div className="px-2">
-                            <Checkbox name={article.search_slug + "_title"}
-                                      value={article.title}
-                                      checked={search_by === 'title'}
-                                      handleChange={e => selectSearchOption(e, 'title')}/>
-                        </div>
-                    </Label>
-                    <Label className='flex justify-between items-center'>
-                        <div className="p-2 w-full">
-                            <Input name={article.search_slug + "_input"}
-                                   className="w-6/12 text-xs disabled:bg-gray-100"
-                                   isDisabled={disable_input}
-                                   value={input_value}
-                                   handleChange={on_other_value_change}/>
-                        </div>
-                        <div className="px-2">
-                            <Checkbox name={article.search_slug + "_other"}
-                                      value={input_value}
-                                      checked={search_by === 'other'}
-                                      handleChange={e => selectSearchOption(e, 'other')}/>
-                        </div>
-                    </Label>
+            {article.images.wallpaper && <div className='relative'>
+                <img src={article.images.wallpaper} className='w-full'/>
+                <button
+                    className='absolute right-1 bottom-1 text-xs text-white border border-transparent hover:border-white hover:bg-red-800 rounded px-1 py-1'
+                    onClick={removeWallpaper}
+                >Remove image</button>
+            </div>}
+
+            {!article.images.wallpaper &&
+                <div className="bg-blue-100 text-blue-600">
+                    <div>
+                        <Label className='flex justify-between items-center hover:bg-blue-300'>
+                            <div className="px-2">
+                                <Checkbox name={article.id + "_slug"}
+                                          value={article.search.value}
+                                          checked={article.search.field === 'slug'}
+                                          handleChange={editSearchOption.bind(null, article.id, 'slug', article.search.value)}
+                                />
+                            </div>
+                            <div className="p-2 w-full font-bold text-sm pl-3">{article.search.value}</div>
+                        </Label>
+
+                        <Label className='flex justify-between items-center hover:bg-blue-300'>
+                            <div className="px-2">
+                                <Checkbox name={article.id + "_title"}
+                                          value={article.title}
+                                          checked={article.search.field === 'title'}
+                                          handleChange={editSearchOption.bind(null, article.id, 'title', article.title)}
+                                />
+                            </div>
+                            <div className="p-2 w-full font-bold text-sm pl-3">{article.title}</div>
+
+                        </Label>
+
+                        <Label className='flex justify-between items-center hover:bg-blue-300'>
+                            <div className="px-2">
+                                <Checkbox name={article.id + "_other"}
+                                          checked={article.search.field === 'custom'}
+                                          handleChange={editSearchOption.bind(null, article.id, 'custom', customTitle)}
+                                />
+                            </div>
+                            <div className="p-2 w-full">
+                                <input value={customTitle}
+                                       onChange={(e) => setCustomTitle(e.target.value)}
+                                       placeholder="Alte idei"
+                                       className="w-10/12 text-sm px-2 py-1 bg-transparent border-b border-b-2 border-b-blue-500 text-blue-600 outline-none placeholder:text-blue-400"/>
+                            </div>
+                        </Label>
+                    </div>
                 </div>
+            }
+
+            <div className='my-3 px-2 flex flex-col items-center justify-center'>
+                <div className='flex justify-between w-full'>
+                    <button type='button'
+                            className='px-4 py-2 bg-white rounded-md font-semibold text-sm text-blue-500 uppercase border border-blue-300 hover:bg-blue-100'
+                            onClick={showIntro.bind(null, article.id)}>Intro
+                    </button>
+                    <button type='button'
+                            className='px-4 py-2 bg-white rounded-md font-semibold text-sm text-blue-500 uppercase border border-blue-300 hover:bg-blue-100'
+                            onClick={editArticle}
+                    >Select Image
+                    </button>
+                </div>
+                {article.isIntroDisplayed && <p className='mt-1'>{article.content}</p>}
             </div>
         </Card>
     );

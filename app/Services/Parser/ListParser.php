@@ -2,6 +2,8 @@
 
 namespace App\Services\Parser;
 
+use Illuminate\Support\Str;
+
 class ListParser implements ParserInterface {
 
     use Fragmentize;
@@ -27,6 +29,7 @@ class ListParser implements ParserInterface {
         // based on list of intro titles, find titles of all parts of article
         foreach ($intros as $intro){
             $parts = $list_items->filter(function ($item) use ($intro){
+                $intro = Str::of($intro)->replace("+", "\+");
                 return preg_match("/$intro/", $item);
             })->values()->toArray();
             $this->titles[$intro] = $parts;

@@ -31,14 +31,15 @@ export default function ArticleWithImages({article, editImage}) {
             ) : (
                 <>
                     <div className='flex'>
-                        <div className="w-8/12 border-r border-blue-300">
+                        <div className="w-9/12 border-r border-blue-300">
                             <div className='px-2 p-4'>
                                 <h3 className="py-2">{article.id} - Resultate pentru <span
                                     className="font-bold">"{article.query}"</span></h3>
                             </div>
                             <div className="flex flex-wrap">
                                 {article.images.items.map((image) => (
-                                    <Image image={image} key={image.link}
+                                    <Image key={image.link}
+                                           image={image}
                                            onChangeSelectedImage={e => handleSelectedImage(e, article.query)}/>
                                 ))}
                             </div>

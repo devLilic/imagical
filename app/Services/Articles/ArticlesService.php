@@ -19,13 +19,14 @@ class ArticlesService {
     {
         $this->html = $htmlCode;
         $titles = ListParser::parse($this->html)->get();
+
         foreach ($titles as $search => $slugs) {
             $article = new Article($search, $slugs);
             $article->title = TextParser::parse($this->html)->get_title_for($article->slugs);
             $article->content = TextParser::parse($this->html)->get_content_for($article->slugs);
             $this->articles[] = $article;
         }
-
+//        dd($this->articles);
         return $this->articles;
     }
 }

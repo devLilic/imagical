@@ -2,7 +2,7 @@ import React from "react";
 
 export default function UploadSvg() {
     return (
-        <svg className="w-8 h-8"
+        <svg className="w-5 "
                  fill="currentColor"
                  xmlns="http://www.w3.org/2000/svg"
                  viewBox="0 0 20 20">

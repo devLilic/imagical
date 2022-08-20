@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LocalImagesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -39,3 +40,6 @@ Route::post('results', function (Request $request)
 
     return response()->json($results->json(), 200);
 });
+
+Route::get('images', [LocalImagesController::class, 'index']);
+Route::get('search-images', [LocalImagesController::class, 'search']);

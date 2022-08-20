@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import Authenticated from '@/Layouts/Authenticated';
-import {Head, useForm} from '@inertiajs/inertia-react';
+import {useForm} from '@inertiajs/inertia-react';
 import UploadButton from "@/Components/UI/UploadButton/UploadButton";
 import DisplayError from "@/Components/UI/DisplayError";
+import PageContent from "@/Components/UI/PageContent";
 
-export default function Upload({auth, errors}) {
+const Upload = props => {
     const [error, setError] = useState('')
     const [ready, setReady] = useState(false);
     const {data, setData, post} = useForm({
@@ -28,23 +28,15 @@ export default function Upload({auth, errors}) {
     }
 
     return (
-        <Authenticated
-            auth={auth}
-            errors={errors}
-        >
-            <Head title="Upload titles"/>
-            <div className="py-6">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-2 relative">
-                        {error && <DisplayError error={error} />}
-                        <form>
-                            <div className="flex w-full h-48 items-center justify-center bg-grey-lighter">
-                                <UploadButton handleChange={handleChange}/>
-                            </div>
-                        </form>
-                    </div>
+        <PageContent auth={props.auth} errors={props.errors} title="Upload titles">
+            {error && <DisplayError error={error}/>}
+            <form>
+                <div className="flex w-full h-48 items-center justify-center bg-grey-lighter">
+                    <UploadButton title="Upload Titles" handleChange={handleChange} classes='text-lg hover:text-red-600'/>
                 </div>
-            </div>
-        </Authenticated>
+            </form>
+        </PageContent>
     );
 }
+
+export default Upload;
