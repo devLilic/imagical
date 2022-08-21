@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LocalImagesController;
 use App\Http\Controllers\TitlesController;
 use App\Services\Articles\Article;
 use Facades\App\Services\Articles\Articles;
@@ -34,6 +35,8 @@ Route::middleware(['auth'])->group(function(){
 
     Route::post('search', [TitlesController::class, 'search']);
 
+    Route::get('upload', [LocalImagesController::class, 'create'])->name('upload-images');
+    Route::post('upload', [LocalImagesController::class, 'store']);
 });
 
 Route::get('/dashboard', function ()

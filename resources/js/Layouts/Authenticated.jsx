@@ -25,7 +25,11 @@ export default function Authenticated({ auth, header, children }) {
                                     Home
                                 </NavLink>
                                 <NavLink href={route('titles')} active={route().current('titles')}>
-                                    Upload titles
+                                    Telejurnal
+                                </NavLink>
+
+                                <NavLink href={route('upload-images')} active={route().current('upload-images')}>
+                                    Încarcă imagini
                                 </NavLink>
                             </div>
                         </div>
