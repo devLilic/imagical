@@ -43,3 +43,4 @@ Route::post('results', function (Request $request)
 
 Route::get('images', [LocalImagesController::class, 'index']);
 Route::get('search-images', [LocalImagesController::class, 'search']);
+Route::post('upload', [LocalImagesController::class, 'store']);

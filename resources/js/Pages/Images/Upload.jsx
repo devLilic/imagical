@@ -7,13 +7,15 @@ const MAX_UPLOADS = 5;
 const Upload = props => {
     const [fileLimit, setFileLimit] = useState(false)
 
-    const { data, setData, post} = useForm({
+    const { data, setData, post, processing} = useForm({
         files: [],
     })
 
     useEffect(()=>{
-        post('/upload')
-        console.log('file upload')
+        if (data.files.length){
+            post('/api/upload')
+            console.log('file upload', data.files)
+        }
     }, [data.files])
 
     const handleUploadFiles = files => {

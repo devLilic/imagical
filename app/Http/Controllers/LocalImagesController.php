@@ -6,6 +6,7 @@ use App\Models\Image;
 use App\Models\Tag;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -15,12 +16,14 @@ class LocalImagesController extends Controller {
     {
         $images = Image::with('tags')->take(20)->get();
         $images->map(fn($image) => $image->url = asset("images/$image->url"));
+
         return $images;
     }
 
     public function search(Request $request)
     {
         $tag = Tag::where('title', $request->search)->first();
+
         return $tag->images()->get();
     }
 
@@ -31,15 +34,20 @@ class LocalImagesController extends Controller {
 
     public function store()
     {
-        $files = request('files');
-        $date = Carbon::now()->format('Ymd');
-//        dd(Image::first());
-        $number = 0;
-        foreach ($files as $file){
+        $uploaded_today = Image::whereDate('created_at', Carbon::today())->count();
+        $order_number = $uploaded_today + 1;
 
-            $path = `img_{$date}_{$number}`;
-            Storage::disk('public')->put($file);
+        $date = Carbon::now()->format('Ymd');
+
+        $uploaded_images = [];
+        foreach (request('files') as $file) {
+            $path = $file->storeAs('', "img_{$date}_{$order_number}." . $file->getClientOriginalExtension(), 'images');
+            $uploaded_images[] = Image::create([
+                'url' => $path
+            ]);
+            $order_number++;
         }
-        dd($date);
+
+        return redirect('upload', 303)->with(['images' => collect($uploaded_images)->pluck('url', 'id')]);
     }
 }

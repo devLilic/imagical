@@ -36,7 +36,6 @@ Route::middleware(['auth'])->group(function(){
     Route::post('search', [TitlesController::class, 'search']);
 
     Route::get('upload', [LocalImagesController::class, 'create'])->name('upload-images');
-    Route::post('upload', [LocalImagesController::class, 'store']);
 });
 
 Route::get('/dashboard', function ()
