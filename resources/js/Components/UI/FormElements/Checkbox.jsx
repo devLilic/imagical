@@ -1,14 +1,17 @@
 import React from 'react';
+import {Checkbox as MaterialCheckbox} from "@material-tailwind/react";
 
-export default function Checkbox({ name, value, checked, handleChange }) {
+const Checkbox = ({id, isChecked, value, onChange}) => {
     return (
-        <input
-            type="checkbox"
-            name={name}
-            value={value}
-            className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            checked={checked}
-            onChange={(e) => handleChange(e)}
+        <MaterialCheckbox color="blue"
+                          ripple={false}
+                          className='w-4 h-4'
+                          id={id}
+                          checked={isChecked}
+                          value={value}
+                          onChange={onChange}
         />
     );
-}
+};
+
+export default Checkbox;

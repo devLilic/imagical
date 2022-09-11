@@ -6,18 +6,17 @@ import {
     EDIT_SEARCH,
     INIT_ARTICLES,
     SHOW_INTRO,
-    ADD_WALLPAPER, REMOVE_WALLPAPER
+    ADD_WALLPAPER, REMOVE_WALLPAPER, ADD_CUSTOM_TITLE
 } from "@/Store/ArticleStore/article-actions";
 
 const article = {
     id: null, //uuid()
     title: '',
+    slug: '',
+    custom: '',
     content: '',
     type: '', // BETA, OFF
-    search: {
-        field: '', // SLUG, TITLE, CUSTOM
-        value: '',
-    },
+    search_by: 'slug',
     showIntro: false,
     images: {
         wallpaper: 'https://706172616e74657a65.ultracdn.net/storage/gaze-naturale-900x505_1-1000.png',
@@ -39,12 +38,11 @@ const articlesReducer = (state, action) => {
                     return {
                         id: uuidv4(),
                         title: article.title,
+                        slug: article.search_slug,
+                        custom: '',
                         content: article.content,
                         type: article.type,
-                        search: {
-                            field: 'slug',
-                            value: article.search_slug,
-                        },
+                        search_by: 'slug',
                         isIntroDisplayed: false,
                         images: {
                             wallpaper: '',
@@ -63,11 +61,10 @@ const articlesReducer = (state, action) => {
                 return article;
             });
             return {...state, articles: articles}
-
         case EDIT_SEARCH:
             articles = state.articles.map(article => {
                 if (article.id === action.data.id) {
-
+                    article.search_by = action.data.search_by
                 }
                 return article;
             })
@@ -81,15 +78,23 @@ const articlesReducer = (state, action) => {
                 }
                 return article;
             })
-            let articleToEdit = null;
-            return {...state, articles: articles, articleToEdit: articleToEdit}
+            return {...state, articles, articleToEdit: null}
         case REMOVE_WALLPAPER:
             articles = state.articles.map(article => {
-                if(article.id === action.data){
+                if (article.id === action.data) {
                     article.images.wallpaper = null;
                 }
                 return article
             })
+            return {...state, articles: articles}
+        case ADD_CUSTOM_TITLE:
+            articles = state.articles.map(article => {
+                if (article.id === action.data.id) {
+                    article.search_by = action.data.custom_title !== '' ? 'custom' : 'slug';
+                    article.custom = action.data.custom_title;
+                }
+                return article;
+            });
             return {...state, articles: articles}
         default:
             return defaultArticlesState;
@@ -107,17 +112,8 @@ const ArticlesProvider = props => {
         dispatchArticlesAction({type: SHOW_INTRO, data: id});
     }
 
-    const editSearch = (id, search_field, search_value) => {
-        console.log(id, search_field, search_value);
-        // dispatchArticlesAction({
-        //     type: EDIT_SEARCH, data: {
-        //         id: id,
-        //         search: {
-        //             field: search_field,
-        //             value: search_value
-        //         }
-        //     }
-        // })
+    const editSearch = (id, search_by) => {
+        dispatchArticlesAction({type: EDIT_SEARCH, data: {id: id, search_by: search_by}})
     }
 
     const addWallpaper = (image_url) => {
@@ -125,11 +121,15 @@ const ArticlesProvider = props => {
     }
 
     const removeWallpaper = article_id => {
-        dispatchArticlesAction({ type: REMOVE_WALLPAPER, data: article_id});
+        dispatchArticlesAction({type: REMOVE_WALLPAPER, data: article_id});
     }
 
     const setArticleToEdit = (article_id) => {
         dispatchArticlesAction({type: MARK_ARTICLE_FOR_EDIT, data: article_id})
+    }
+
+    const addCustomTitle = (article_id, custom_title) => {
+        dispatchArticlesAction({type: ADD_CUSTOM_TITLE, data: {id: article_id, custom_title: custom_title}})
     }
 
     const articlesContext = {
@@ -140,6 +140,7 @@ const ArticlesProvider = props => {
         addWallpaper: addWallpaper,
         removeWallpaper: removeWallpaper,
         editSearch: editSearch,
+        addCustomTitle: addCustomTitle,
         removeArticle: (id) => {
         }
     }

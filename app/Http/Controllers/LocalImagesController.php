@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use phpDocumentor\Reflection\Types\Collection;
 
 class LocalImagesController extends Controller {
 
@@ -20,16 +21,98 @@ class LocalImagesController extends Controller {
         return $images;
     }
 
+    public function relevant(Request $request)
+    {
+        $slug_words = explode(" ", trim($request->search));
+        $suggested_images = collect();
+        if (count($slug_words) === 2) {
+            $tag = Tag::where('title', strtolower(implode('-', $slug_words)))->first();
+            if ($tag) {
+                $images = $tag->images()->with('tags')->get();
+                if ($images->count()) {
+                    $images->map(function ($image) use ($suggested_images)
+                    {
+                        $image->url = asset("images/$image->url");
+                        $suggested_images->push($image);
+                    });
+                }
+            }
+        }
+        if (count($slug_words) < 4) {
+            foreach ($slug_words as $word) {
+                $tag = Tag::where('title', strtolower($word))->first();
+                if ($tag) {
+                    $images = $tag->images()->with('tags')->get();
+                    if ($images->count()) {
+                        $images->map(function ($image) use ($suggested_images)
+                        {
+                            $image->url = asset("images/$image->url");
+                            if(!$suggested_images->pluck('url')->contains($image->url)){
+                                $suggested_images->push($image);
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
+        return $suggested_images;
+    }
+
+
     public function search(Request $request)
     {
-        $tag = Tag::where('title', $request->search)->first();
+        if ($request->search !== "") {
+            $tags = Tag::where('title', 'like', "%$request->search%")->get();
+            $images = collect();
+            foreach ($tags as $tag) {
+                $tag->images()->with('tags')->get()->map(function ($image) use ($images)
+                {
+                    if (!$images->contains($image)) {
+                        $image->url = asset("images/$image->url");
+                        $images->add($image);
+                    }
+                });
+            }
+        } else {
+            $images = Image::with('tags')->take(20)->get();
+            $images->map(fn($image) => $image->url = asset("images/$image->url"));
+        }
 
-        return $tag->images()->get();
+        return $images;
     }
 
     public function create()
     {
-        return Inertia::render('Images/Upload');
+        $images = Image::where('isNew', true)->whereDate('created_at', Carbon::today())->orderBy('created_at', 'DESC')->get();
+
+        $uploaded_today = [];
+        foreach ($images as $image) {
+            $item['id'] = $image->id;
+            $item['url'] = Storage::disk('images')->url($image->url);
+            $item['tags'] = $image->tags->implode(", ");
+            $uploaded_today[] = $item;
+        }
+
+        return Inertia::render('Images/Upload', [
+            'uploaded' => $uploaded_today,
+        ]);
+    }
+
+    public function storeTags()
+    {
+        $images = collect(json_decode(request('images')));
+        $images->map(function ($image)
+        {
+            $localImage = Image::find($image->id);
+            $tags = explode(",", $image->tags);
+            foreach ($tags as $tag) {
+                $localTag = Tag::firstOrCreate(['title' => trim($tag)]);
+                $localImage->tags()->attach($localTag);
+            }
+            $localImage->isNew = false;
+            $localImage->save();
+        });
     }
 
     public function store()
@@ -39,15 +122,34 @@ class LocalImagesController extends Controller {
 
         $date = Carbon::now()->format('Ymd');
 
-        $uploaded_images = [];
         foreach (request('files') as $file) {
-            $path = $file->storeAs('', "img_{$date}_{$order_number}." . $file->getClientOriginalExtension(), 'images');
-            $uploaded_images[] = Image::create([
+            do {
+                $fileName = "img_{$date}_{$order_number}." . $file->getClientOriginalExtension();
+                $order_number++;
+            } while (Image::where('url', $fileName)->count() !== 0);
+
+            $path = $file->storeAs('', $fileName, 'images');
+            Image::create([
                 'url' => $path
             ]);
-            $order_number++;
         }
 
-        return redirect('upload', 303)->with(['images' => collect($uploaded_images)->pluck('url', 'id')]);
+        return redirect()->route('upload-images');
+    }
+
+    public function destroy(Request $request, Image $image)
+    {
+        Storage::disk('images')->delete($image->url);
+        $image->delete();
+    }
+
+    public function allImages()
+    {
+        $images = Image::with('tags')->take(20)->get();
+        $images->map(fn($image) => $image->url = asset("images/$image->url"));
+
+        return Inertia::render("Images/AllImages", [
+            'images' => $images
+        ]);
     }
 }

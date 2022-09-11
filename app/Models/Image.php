@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
-class Image extends Model
-{
+class Image extends Model {
+
     use HasFactory;
 
     protected $fillable = ['url'];
@@ -15,4 +17,11 @@ class Image extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+
+//    protected function url(): Attribute
+//    {
+//        return Attribute::make(
+//            get: fn($value) => Storage::disk('images')->url($value)
+//        );
+//    }
 }

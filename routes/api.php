@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ExternalImagesController;
 use App\Http\Controllers\LocalImagesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -43,4 +44,12 @@ Route::post('results', function (Request $request)
 
 Route::get('images', [LocalImagesController::class, 'index']);
 Route::get('search-images', [LocalImagesController::class, 'search']);
+Route::get('relevant', [LocalImagesController::class, 'relevant']);
+Route::get('resources', [ExternalImagesController::class, 'getImages']);
+Route::get('crop', [ExternalImagesController::class, 'crop']);
+
+
+
 Route::post('upload', [LocalImagesController::class, 'store']);
+Route::delete('upload/{image}', [LocalImagesController::class, 'destroy']);
+Route::post('addTags', [LocalImagesController::class, 'storeTags']);
