@@ -77,40 +77,18 @@ class ExternalImagesController extends Controller {
 
     public function getImages(Request $request)
     {
-//        dd($request->search);
-//        $results = [];
+        $response = Http::get(config('services.google_search.url'), [
+                'key' => config('services.google_search.key'),
+                'cx' => config('services.google_search.cx'),
+                'gl' => 'md',
+                'imgColorType' => 'color',
+                'dateRestrict' => 'm[12]',
+                'searchType' => 'image',
+//        'sort' => 'date-sdate',
+                'q' => trim($request->search),
+            ])->json();
 
-//        $response = Http::get(config('services.google_search.url'), [
-//                'key' => config('services.google_search.key'),
-//                'cx' => config('services.google_search.cx'),
-//                'gl' => 'md',
-//                'imgColorType' => 'color',
-//                'dateRestrict' => 'm[12]',
-//                'searchType' => 'image',
-////        'sort' => 'date-sdate',
-//                'q' => trim($request->search),
-//            ])->json();
-
-//        foreach ($request->get('articles') as $q) {
-//
-//            $response = Http::get(config('services.google_search.url'), [
-//                'key' => config('services.google_search.key'),
-//                'cx' => config('services.google_search.cx'),
-//                'gl' => 'md',
-//                'imgColorType' => 'color',
-//                'dateRestrict' => 'm[12]',
-//                'searchType' => 'image',
-////        'sort' => 'date-sdate',
-//                'q' => $q['query'],
-//            ])->json();
-//            dd($response);
-//            $results[] = [
-//                'id' => $q['id'],
-//                'query' => $q['query'],
-//                'images' => $response
-//            ];
-//        }
-        $response = $this->testData();
+//        $response = $this->testData();
         $results = [
             'images' => $response['items'],
             'next_page' => $response['queries']['nextPage'][0]

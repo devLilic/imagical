@@ -4,6 +4,7 @@ import ArticlesContext from "@/Store/ArticleStore/articles-context";
 import ImageEditorDialog from "@/Shared/Dialogs/ImageEditorDialog";
 import {Button} from "@material-tailwind/react";
 import ImagesContext from "@/Store/LocalImagesStore/images-context";
+import {saveAs} from 'file-saver';
 
 const ArticlesList = () => {
     const articlesCtx = useContext(ArticlesContext)
@@ -18,15 +19,10 @@ const ArticlesList = () => {
         let counter = 1;
         articlesCtx.articles.map(article => {
 
-            // if (article.images.wallpaper) {
-            //     let downloading = browser.downloads.download({
-            //         url : article.images.wallpaper,
-            //         filename : `${counter}_${article.slug}.jpg`,
-            //     });
-            //     downloading()
-            //     console.log(`${counter}_${article.slug}`)
-            //     counter++;
-            // }
+            if (article.images.wallpaper) {
+                saveAs(`${article.images.wallpaper}`, `${counter}_${article.slug}.jpg`)
+            }
+            counter++
         })
     }
 

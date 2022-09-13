@@ -122,6 +122,7 @@ class LocalImagesController extends Controller {
 
         $date = Carbon::now()->format('Ymd');
 
+        $uploaded_now = collect();
         foreach (request('files') as $file) {
             do {
                 $fileName = "img_{$date}_{$order_number}." . $file->getClientOriginalExtension();
@@ -129,12 +130,19 @@ class LocalImagesController extends Controller {
             } while (Image::where('url', $fileName)->count() !== 0);
 
             $path = $file->storeAs('', $fileName, 'images');
-            Image::create([
+
+            $image = Image::create([
                 'url' => $path
+            ]);
+
+            $uploaded_now->push([
+                'id' => $image->id,
+                'url' => asset("images/$image->url")
             ]);
         }
 
-        return redirect()->route('upload-images');
+        return $uploaded_now;
+//        return redirect()->route('upload-images');
     }
 
     public function destroy(Request $request, Image $image)
