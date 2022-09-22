@@ -9,11 +9,17 @@ import {
     SELECT_EXTERNAL_IMAGE,
     SET_EXTERNAL_QUERY,
     SET_LOCAL_QUERY,
-    SET_RELEVANT_QUERY, CROP_IMAGE_PREPARE, CROP_IMAGE, CROP_IMAGE_PENDING,
+    SET_RELEVANT_QUERY,
+    CROP_IMAGE_PREPARE,
+    CROP_IMAGE,
+    CROP_IMAGE_PENDING,
+    LOAD_MORE_EXTERNAL_IMAGES,
+    LOADING_EXTERNAL_IMAGES,
 } from "@/Store/LocalImagesStore/images-actions";
-import loadImages from "@/Helpers/Api";
+import apiRequest from "@/Helpers/Api";
 import {v4 as uuidv4} from 'uuid';
 import ArticlesContext from "@/Store/ArticleStore/articles-context";
+import ExternalImage from "@/Helpers/ExternalImage";
 
 const defaultLocalImagesState = {
     relevant: {
@@ -28,7 +34,7 @@ const defaultLocalImagesState = {
     },
     external: {
         loading: false,
-        images: [],
+        images: {},
         query: '',
         selected: {
             loading: false,
@@ -46,10 +52,10 @@ const imagesReducer = (state, action) => {
         case SEARCH_LOCAL_IMAGES:
             return {...state, local: {...state.local, images: action.images, loading: false}}
         case SET_LOCAL_QUERY:
-            if (action.query === '') {
-                return state;
+            return (action.query === '') ? state : {
+                ...state,
+                local: {...state.local, query: action.query, loading: true}
             }
-            return {...state, local: {...state.local, query: action.query, loading: true}}
         case SET_RELEVANT_QUERY:
             return {...state, relevant: {...state.relevant, query: action.query, loading: true}}
         case SEARCH_RELEVANT_IMAGES:
@@ -57,13 +63,24 @@ const imagesReducer = (state, action) => {
         case RESET_SEARCH:
             return {
                 ...state,
+                external: {...state.external, loading: false},
                 local: {...state.local, query: '', loading: false},
                 relevant: {...state.relevant, query: '', loading: false},
             }
         case SET_EXTERNAL_QUERY:
             return {...state, external: {...state.external, query: action.query, loading: true}}
         case SEARCH_EXTERNAL_IMAGES:
-            return {...state, external: {...state.external, images: action.images, loading: false}}
+            let external_images = state.external.images;
+            if (action.article_id in external_images) {
+                external_images[action.article_id] = [...external_images[action.article_id], ...action.images];
+            } else {
+                external_images[action.article_id] = action.images
+            }
+            return {...state, external: {...state.external, images: external_images, loading: false}};
+        case LOAD_MORE_EXTERNAL_IMAGES:
+            let images = {...state.external.images};
+            images[action.article_id] = [...images[action.article_id], ...action.images];
+            return {...state, external: {...state.external, images, loading: false}};
         case SELECT_EXTERNAL_IMAGE:
             return {
                 ...state,
@@ -113,7 +130,7 @@ const ImagesProvider = props => {
     const [imagesState, dispatchImagesAction] = useReducer(imagesReducer, defaultLocalImagesState);
 
     useEffect(() => {
-        loadImages('/api/images').then(data => {
+        apiRequest('/api/images').then(data => {
             dispatchImagesAction({type: INIT_IMAGES, images: data.data})
         });
     }, []);
@@ -123,7 +140,7 @@ const ImagesProvider = props => {
             let options = {
                 params: {search: imagesState.relevant.query}
             }
-            loadImages('/api/relevant', options).then(data => {
+            apiRequest('/api/relevant', options).then(data => {
                 dispatchImagesAction({type: SEARCH_RELEVANT_IMAGES, images: data.data})
             });
         }
@@ -134,7 +151,7 @@ const ImagesProvider = props => {
             let options = {
                 params: {search: imagesState.local.query}
             }
-            loadImages('/api/search-images', options)
+            apiRequest('/api/search-images', options)
                 .then(data => {
                     dispatchImagesAction({type: SEARCH_LOCAL_IMAGES, images: data.data})
                 });
@@ -142,23 +159,16 @@ const ImagesProvider = props => {
     }, [imagesState.local.query])
 
     useEffect(() => {
-        if (imagesState.external.query !== '') {
+        if (imagesState.external.query !== '' && !(articlesCtx.articleToEdit in imagesState.external.images)) {
             let options = {
                 params: {search: imagesState.external.query}
             }
-            loadImages('/api/resources', options)
+            apiRequest('/api/resources', options)
                 .then(data => {
                     const images = data.data.images.map(image => {
-                        return {
-                            id: uuidv4(),
-                            url: image.link,
-                            article_url: image.image.contextLink,
-                            site: image.displayLink,
-                            width: image.image.width,
-                            height: image.image.height,
-                        }
+                        return new ExternalImage(image.link, image.image.contextLink, image.displayLink, image.image.width, image.image.height);
                     })
-                    dispatchImagesAction({type: SEARCH_EXTERNAL_IMAGES, images})
+                    dispatchImagesAction({type: SEARCH_EXTERNAL_IMAGES, images, article_id: articlesCtx.articleToEdit})
                 });
         }
     }, [imagesState.external.query])
@@ -169,7 +179,7 @@ const ImagesProvider = props => {
                 params: {url: imagesState.external.selected.url, section: imagesState.external.selected.cropSection}
             }
 
-            loadImages('/api/crop', options)
+            apiRequest('/api/crop', options)
                 .then(data => {
                     let image = data.data.image
                     articlesCtx.addWallpaper(image.url)
@@ -208,6 +218,19 @@ const ImagesProvider = props => {
         dispatchImagesAction({type: CROP_IMAGE_PENDING})
     }
 
+    const loadMore = () => {
+        let options = {
+            params: {search: imagesState.external.query, startIndex: imagesState.external.images[articlesCtx.articleToEdit].length+1}
+        }
+        apiRequest('/api/resources', options)
+            .then(data => {
+                const images = data.data.images.map(image => {
+                    return new ExternalImage(image.link, image.image.contextLink, image.displayLink, image.image.width, image.image.height);
+                })
+                dispatchImagesAction({type: LOAD_MORE_EXTERNAL_IMAGES, images, article_id: articlesCtx.articleToEdit})
+            });
+    }
+
 
     const imagesContext = {
         relevant: {
@@ -238,7 +261,8 @@ const ImagesProvider = props => {
         searchExternalImages,
         selectExternalImage,
         setCropSection,
-        cropImage
+        cropImage,
+        loadMore
     }
 
     return (

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LocalImagesController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TitlesController;
 use App\Services\Articles\Article;
 use Facades\App\Services\Articles\Articles;
@@ -24,18 +25,19 @@ Route::get('/', function ()
     return redirect()->route('titles');
 });
 
-Route::middleware(['auth'])->group(function(){
+Route::middleware(['auth'])->group(function ()
+{
     Route::get('titles', [TitlesController::class, 'index'])->name('titles');
+    Route::get('upload', [LocalImagesController::class, 'create'])->name('upload-images');
+    Route::get('allImages', [LocalImagesController::class, 'allImages'])->name('all-images');
+    Route::get('settings', [SettingsController::class, 'deleteImagesWithoutTags'])->name('settings');
 
     Route::post('titles', [TitlesController::class, 'store']);
-
-    Route::get('search', function (){
+    Route::post('search', [TitlesController::class, 'search']);
+    Route::get('search', function ()
+    {
         return redirect()->route('titles');
     });
-
-    Route::post('search', [TitlesController::class, 'search']);
-
-    Route::get('upload', [LocalImagesController::class, 'create'])->name('upload-images');
 });
 
 Route::get('/dashboard', function ()

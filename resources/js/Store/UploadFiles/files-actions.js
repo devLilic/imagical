@@ -1,0 +1,7 @@
+export const SET_FILES_LIMIT_EXCEED = 'SET_FILES_LIMIT_EXCEED';
+export const ADD_FILES_TO_UPLOAD = 'ADD_FILES_TO_UPLOAD';
+export const VIEW_UPLOADED_FILES = 'VIEW_UPLOADED_FILES';
+export const DELETE_IMAGE = 'DELETE_IMAGE';
+export const ADD_TAGS = 'ADD_TAGS';
+export const SAVE_TAGS = 'SAVE_TAGS';
+

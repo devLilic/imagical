@@ -34,7 +34,7 @@ return [
     'google_search' => [
         'url' => 'https://www.googleapis.com/customsearch/v1',
         'key' => env('GOOGLE_SEARCH_KEY'),
-        'cx' => env('google_search_cx'),
+        'cx' => env('GOOGLE_SEARCH_CX'),
     ]
 
 ];

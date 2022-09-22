@@ -4,6 +4,7 @@ import {Button, Input, TabPanel} from "@material-tailwind/react";
 import Loading from "@/Components/UI/Svg/Loading";
 import 'react-image-crop/dist/ReactCrop.css';
 import CropBlock from "@/Shared/Dialogs/ImageEditor/Crop/CropBlock";
+import ExternalImagesList from "@/Components/ExternalImages/ExternalImagesList";
 
 const GoogleTab = (props) => {
     const imagesCtx = useContext(ImagesContext);
@@ -13,34 +14,19 @@ const GoogleTab = (props) => {
         props.hideDialog();
     }
 
-    const googleImages = imagesCtx.external.images.map(image => <div
-        className='border border-purple-500 rounded-lg overflow-hidden text-center flex flex-col items-center justify-start flex-nowrap'
-        key={image.id}>
-        <img src={image.url} onClick={imagesCtx.selectExternalImage.bind(null, image.url)} className='cursor-pointer'/>
-        <div className='text-xs mt-2'>
-            <a className='bg-yellow-100 hover:bg-yellow-200 px-2 rounded-lg whitespace-nowrap' target='_blank'
-               href={image.article_url}>{image.site}</a>
-        </div>
-        <div className='text-xs'>
-            {image.width} x {image.height}
-        </div>
-    </div>)
-
     return (
         <TabPanel key='external' value='external' className='w-full'>
             {imagesCtx.external.loading && <div className='h-96 flex justify-center'>
                 <Loading/>
             </div>}
             {!imagesCtx.external.loading && <div>
-                <h2 className='text-xl text-gray-900 py-2 text-center'>Rezultate pentru
-                    "{imagesCtx.external.query}"</h2>
+                <h2 className='text-xl text-gray-900 py-2 text-center'>
+                    Rezultate pentru "{imagesCtx.external.query}"
+                </h2>
                 <div className='flex w-full items-start justify-between'>
-                    <div className="w-7/12 grid grid-cols-6 grid-rows-3 gap-y-3 gap-x-3">
-                        {googleImages}
-                        <Button
-                            className='bg-transparent border border-purple-500 text-purple-800 hover:text-white hover:bg-purple-400'>Load
-                            more</Button>
-                    </div>
+
+                    <ExternalImagesList selectExternalImage={imagesCtx.selectExternalImage}/>
+
                     <div className='w-4/12'>
                         <div className='mx-2'>
 

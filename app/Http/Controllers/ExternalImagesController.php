@@ -77,25 +77,31 @@ class ExternalImagesController extends Controller {
 
     public function getImages(Request $request)
     {
-        $response = Http::get(config('services.google_search.url'), [
-                'key' => config('services.google_search.key'),
-                'cx' => config('services.google_search.cx'),
-                'gl' => 'md',
-                'imgColorType' => 'color',
-                'dateRestrict' => 'm[12]',
-                'searchType' => 'image',
+        $config = [
+            'key' => config('services.google_search.key'),
+            'cx' => config('services.google_search.cx'),
+            'gl' => 'md',
+            'imgColorType' => 'color',
+            'dateRestrict' => 'm[12]',
+            'searchType' => 'image',
 //        'sort' => 'date-sdate',
-                'q' => trim($request->search),
-            ])->json();
+            'q' => trim($request->search),
+        ];
 
+
+        if(request('startIndex')){
+            $config['start'] = request('startIndex');
+        }
+
+        $response = Http::get(config('services.google_search.url'),  $config)->json();
+//
 //        $response = $this->testData();
         $results = [
             'images' => $response['items'],
             'next_page' => $response['queries']['nextPage'][0]
         ];
 
-        return ($results);
-
+        return $results;
     }
 
     protected function testData()

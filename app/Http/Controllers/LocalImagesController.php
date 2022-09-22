@@ -5,17 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Image;
 use App\Models\Tag;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use phpDocumentor\Reflection\Types\Collection;
 
 class LocalImagesController extends Controller {
 
     public function index()
     {
-        $images = Image::with('tags')->take(20)->get();
+        $take = request('takeImages');
+        $images = !!$take ?
+            Image::with('tags')->take((int) $take)->get() :
+            Image::with('tags')->get();
         $images->map(fn($image) => $image->url = asset("images/$image->url"));
 
         return $images;
@@ -47,7 +49,7 @@ class LocalImagesController extends Controller {
                         $images->map(function ($image) use ($suggested_images)
                         {
                             $image->url = asset("images/$image->url");
-                            if(!$suggested_images->pluck('url')->contains($image->url)){
+                            if (!$suggested_images->pluck('url')->contains($image->url)) {
                                 $suggested_images->push($image);
                             }
                         });
@@ -141,19 +143,36 @@ class LocalImagesController extends Controller {
             ]);
         }
 
+//        $today_images = Image::whereDate('created_at', Carbon::today())->get();
+//        $result = collect();
+//        $today_images->map(function($image){
+//            $image->url = asset("images/$image->url");
+//        });
+//        dd($today_images)
+
+//        return $today_images;
         return $uploaded_now;
 //        return redirect()->route('upload-images');
     }
 
-    public function destroy(Request $request, Image $image)
+    public function destroy(Request $request)
     {
-        Storage::disk('images')->delete($image->url);
-        $image->delete();
+        try {
+            $image = Image::where('id', $request->image_id)->firstOrFail();
+            $id = $image->id;
+            Storage::disk('images')->delete($image->url);
+            $image->delete();
+            if ($id !== 0) {
+                return ['image_id' => $id];
+            }
+        } catch (ModelNotFoundException $e) {
+            return ['error' => 'File not found'];
+        }
     }
 
     public function allImages()
     {
-        $images = Image::with('tags')->take(20)->get();
+        $images = Image::with('tags')->get();
         $images->map(fn($image) => $image->url = asset("images/$image->url"));
 
         return Inertia::render("Images/AllImages", [

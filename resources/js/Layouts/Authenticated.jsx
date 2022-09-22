@@ -31,6 +31,14 @@ export default function Authenticated({ auth, header, children }) {
                                 <NavLink href={route('upload-images')} active={route().current('upload-images')}>
                                     Încarcă imagini
                                 </NavLink>
+
+                                <NavLink href={route('all-images')} active={route().current('all-images')}>
+                                    Toate Imaginile
+                                </NavLink>
+
+                                <NavLink href={route('settings')} active={route().current('settings')}>
+                                    Setări
+                                </NavLink>
                             </div>
                         </div>
 

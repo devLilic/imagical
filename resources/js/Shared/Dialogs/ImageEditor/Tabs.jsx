@@ -6,7 +6,7 @@ import UploadTab from "@/Shared/Dialogs/ImageEditor/UploadTab";
 
 const Tabs = ({selectImage, hideDialog}) => {
     return (
-        <MaterialTabs id="custom-animation" value="external" className='min-w-full'>
+        <MaterialTabs id="custom-animation" value="local" className='min-w-full'>
             <TabsHeader>
                 <Tab key="local" value="local">Imagini locale</Tab>
                 <Tab key="external" value="external">Google</Tab>

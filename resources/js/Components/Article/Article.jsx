@@ -66,7 +66,7 @@ export default function Article({article, handleModal, loading}) {
                                           isChecked={article.search_by === 'custom'}
                                           onChange={editSearchOption.bind(null, 'custom')}
                                 />
-                                <Input placeholder="Alte idei"
+                                <Input label='Alte idei'
                                        value={article.custom}
                                        onChange={setCustomTitle}
                                 />
@@ -74,7 +74,6 @@ export default function Article({article, handleModal, loading}) {
                         </div>
                 )
             }
-
 
             <ArticleFooter showIntro={showIntro}
                            editArticle={editArticle}

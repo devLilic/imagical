@@ -28,6 +28,22 @@ const defaultArticlesState = ({
     articleToEdit: null
 })
 
+class Artcle {
+    constructor(title, slug, content, type) {
+        this.id = uuidv4();
+        this.title = title;
+        this.slug = slug;
+        this.custom = '';
+        this.content = content;
+        this.type = type;
+        this.search_by = 'slug';
+        this.isIntroDisplayed = false;
+        this.images = {
+            wallpaper: ''
+        }
+    }
+}
+
 const articlesReducer = (state, action) => {
     let articles = {};
     switch (action.type) {
@@ -35,20 +51,7 @@ const articlesReducer = (state, action) => {
             return {
                 articleToEdit: null,
                 articles: action.data.map(article => {
-                    return {
-                        id: uuidv4(),
-                        title: article.title,
-                        slug: article.search_slug,
-                        custom: '',
-                        content: article.content,
-                        type: article.type,
-                        search_by: 'slug',
-                        isIntroDisplayed: false,
-                        images: {
-                            wallpaper: '',
-                            // wallpaper: 'https://706172616e74657a65.ultracdn.net/storage/gaze-naturale-900x505_1-1000.png',
-                        }
-                    }
+                    return new Artcle(article.title, article.search_slug, article.content, article.type);
                 })
             };
         case SHOW_INTRO:

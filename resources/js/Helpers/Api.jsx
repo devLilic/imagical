@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const loadImages = async (url, options = {}, method = 'get', action = 'INIT_IMAGES') => {
+const apiRequest = async (url, options = {}, method = 'get') => {
 
     let axios_params = {
         method: method,
@@ -14,4 +14,4 @@ const loadImages = async (url, options = {}, method = 'get', action = 'INIT_IMAG
     return axios(axios_params);
 }
 
-export default loadImages;
+export default apiRequest;
