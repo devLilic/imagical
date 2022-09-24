@@ -16,10 +16,13 @@ const GoogleTab = (props) => {
 
     return (
         <TabPanel key='external' value='external' className='w-full'>
+            {imagesCtx.external.error && <div
+                className='w-full h-96 flex justify-center items-center uppercase text-4xl text-red-500 font-bold'>{imagesCtx.external.error}</div>}
+
             {imagesCtx.external.loading && <div className='h-96 flex justify-center'>
                 <Loading/>
             </div>}
-            {!imagesCtx.external.loading && <div>
+            {!imagesCtx.external.error && !imagesCtx.external.loading && <div>
                 <h2 className='text-xl text-gray-900 py-2 text-center'>
                     Rezultate pentru "{imagesCtx.external.query}"
                 </h2>

@@ -8,7 +8,7 @@ const AllImagesContent = () => {
         <LocalImages title='Imagini'
                      loading={imagesCtx.local.loading}
                      images={imagesCtx.local.images}
-                     cols={6}
+                     className='grid-cols-7 h-full'
         />
     );
 };

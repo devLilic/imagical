@@ -9,7 +9,7 @@ import ArticleFooter from "@/Components/Article/ArticleFooter";
 import Checkbox from "@/Components/UI/FormElements/Checkbox";
 import Loading from "@/Components/UI/Svg/Loading";
 
-export default function Article({article, handleModal, loading}) {
+export default function Article({article, handleEditorDialog, handleNewArticleDialog, loading}) {
 
     const articlesCtx = useContext(ArticlesContext);
 
@@ -19,7 +19,7 @@ export default function Article({article, handleModal, loading}) {
 
     const editArticle = () => {
         articlesCtx.setArticleToEdit(article.id);
-        handleModal();
+        handleEditorDialog();
     }
 
     const removeWallpaper = () => {
@@ -36,7 +36,7 @@ export default function Article({article, handleModal, loading}) {
 
     return (
         <Card>
-            <ArticleHeader title={article.slug} type={article.type}/>
+            <ArticleHeader title={article.slug} type={article.type} addArticle={handleNewArticleDialog.bind(null, article.id)}/>
 
             {(loading && article.id === articlesCtx.articleToEdit) ?
                 (<div className='h-32 flex justify-center'>

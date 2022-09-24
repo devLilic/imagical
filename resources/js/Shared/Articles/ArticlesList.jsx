@@ -5,14 +5,21 @@ import ImageEditorDialog from "@/Shared/Dialogs/ImageEditorDialog";
 import {Button} from "@material-tailwind/react";
 import ImagesContext from "@/Store/LocalImagesStore/images-context";
 import {saveAs} from 'file-saver';
+import NewArticleDialog from "@/Shared/Dialogs/NewArticleDialog";
 
 const ArticlesList = () => {
     const articlesCtx = useContext(ArticlesContext)
     const imagesCtx = useContext(ImagesContext)
 
-    const [dialogOpen, setDialogOpen] = useState(false)
-    const handleDialog = () => {
-        setDialogOpen(prevState => !prevState)
+    const [editorDialogOpen, setEditorDialogOpen] = useState(false)
+    const [newArticleDialogOpen, setNewArticleDialogOpen] = useState(false  )
+    const handleEditorDialog = () => {
+        setEditorDialogOpen(prevState => !prevState)
+    }
+
+    const handleNewArticleDialog = (article_id) => {
+        articlesCtx.setArticleToEdit(article_id)
+        setNewArticleDialogOpen(prevState => !prevState);
     }
 
     const saveImages = () => {
@@ -26,12 +33,19 @@ const ArticlesList = () => {
         })
     }
 
+    const addNewArticle = (title, type) => {
+        articlesCtx.addNewArticle(title, type, articlesCtx.articleToEdit)
+    }
+
     return (
         <div className="shadow-sm sm:rounded-lg">
             <div className='grid grid-cols-4 gap-x-5'>
                 {articlesCtx.articles && (
                     articlesCtx.articles.map(article =>
-                        <Article key={article.id} article={article} handleModal={handleDialog}
+                        <Article key={article.id}
+                                 article={article}
+                                 handleEditorDialog={handleEditorDialog}
+                                 handleNewArticleDialog={handleNewArticleDialog}
                                  loading={imagesCtx.external.selected.loading}/>
                     )
                 )}
@@ -39,10 +53,10 @@ const ArticlesList = () => {
             <div className='text-center my-2'>
                 <Button className="mb-3" onClick={saveImages}>Save</Button>
             </div>
-            <ImageEditorDialog dialogOpen={dialogOpen} handleDialog={handleDialog}/>
+            <ImageEditorDialog dialogOpen={editorDialogOpen} handleDialog={handleEditorDialog}/>
+            <NewArticleDialog dialogOpen={newArticleDialogOpen} handleDialog={handleNewArticleDialog} saveArticle={addNewArticle}/>
         </div>
     );
-
 };
 
 export default ArticlesList;

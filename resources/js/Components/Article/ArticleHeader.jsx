@@ -1,17 +1,18 @@
 import React from 'react';
 import {Button} from "@material-tailwind/react";
 
-const ArticleHeader = ({title, type}) => {
+const ArticleHeader = ({title, type, addArticle}) => {
     return (
         <div className='px-3 py-2 text-sm font-bold bg-blue-500 text-white flex justify-between items-center'>
             <div className='h-12 flex items-center'>
-                {title} ({type})
+                {title.toUpperCase()} ({type})
             </div>
             <Button variant="text"
                     color='purple'
                     title="Add new article"
                     size='sm'
                     className="ml-3 p-0"
+                    onClick={addArticle}
             >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                      xmlns="http://www.w3.org/2000/svg">

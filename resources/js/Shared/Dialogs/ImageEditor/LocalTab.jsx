@@ -38,21 +38,23 @@ const LocalTab = ({onSelectImage}) => {
                        onChange={handleSearchTag}
                 />
             </div>
-            <div>
-                <LocalImages title='Relevante'
-                             images={imagesCtx.relevant.images}
-                             onSelectImage={onSelectImage}
-                             loading={imagesCtx.relevant.loading}
-                             cols={6}
-                             height={28}
-
-                />
-                <LocalImages title={localImagesTitle}
-                             images={imagesCtx.local.images}
-                             onSelectImage={onSelectImage}
-                             loading={imagesCtx.local.loading}
-                             height={96}
-                />
+            <div className='flex'>
+                <div className={imagesCtx.relevant.images.length ? 'w-2/12' : ''}>
+                    <LocalImages title='Relevante'
+                                 images={imagesCtx.relevant.images}
+                                 onSelectImage={onSelectImage}
+                                 loading={imagesCtx.relevant.loading}
+                                 className='grid-cols-1 h-96'
+                    />
+                </div>
+                <div className={imagesCtx.relevant.images.length ? 'w-10/12' : 'w-full'}>
+                    <LocalImages title={localImagesTitle}
+                                 images={imagesCtx.local.images}
+                                 onSelectImage={onSelectImage}
+                                 loading={imagesCtx.local.loading}
+                                 className='grid-cols-8 h-96'
+                    />
+                </div>
             </div>
         </TabPanel>
     );

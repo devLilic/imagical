@@ -14,12 +14,13 @@ import {
     CROP_IMAGE,
     CROP_IMAGE_PENDING,
     LOAD_MORE_EXTERNAL_IMAGES,
-    LOADING_EXTERNAL_IMAGES,
+    LOADING_EXTERNAL_IMAGES, SET_EXTERNAL_ERROR,
 } from "@/Store/LocalImagesStore/images-actions";
 import apiRequest from "@/Helpers/Api";
 import {v4 as uuidv4} from 'uuid';
 import ArticlesContext from "@/Store/ArticleStore/articles-context";
 import ExternalImage from "@/Helpers/ExternalImage";
+import images from "@/Shared/Images";
 
 const defaultLocalImagesState = {
     relevant: {
@@ -36,6 +37,7 @@ const defaultLocalImagesState = {
         loading: false,
         images: {},
         query: '',
+        error: '',
         selected: {
             loading: false,
             url: '',
@@ -68,7 +70,7 @@ const imagesReducer = (state, action) => {
                 relevant: {...state.relevant, query: '', loading: false},
             }
         case SET_EXTERNAL_QUERY:
-            return {...state, external: {...state.external, query: action.query, loading: true}}
+            return {...state, external: {...state.external, query: action.query, error: '', loading: true}}
         case SEARCH_EXTERNAL_IMAGES:
             let external_images = state.external.images;
             if (action.article_id in external_images) {
@@ -119,6 +121,8 @@ const imagesReducer = (state, action) => {
                     selected: {...state.external.selected, croppedUrl: action.image, readyToCrop: false, loading: false}
                 }
             }
+        case SET_EXTERNAL_ERROR:
+            return {...state, external: {...state.external, error: action.error}}
         default:
             return defaultLocalImagesState;
     }
@@ -155,6 +159,10 @@ const ImagesProvider = props => {
                 .then(data => {
                     dispatchImagesAction({type: SEARCH_LOCAL_IMAGES, images: data.data})
                 });
+        }else{
+            apiRequest('/api/images').then(data => {
+                dispatchImagesAction({type: INIT_IMAGES, images: data.data})
+            });
         }
     }, [imagesState.local.query])
 
@@ -165,11 +173,17 @@ const ImagesProvider = props => {
             }
             apiRequest('/api/resources', options)
                 .then(data => {
+                    if (data.data.images === undefined) {
+                        dispatchImagesAction({type: SET_EXTERNAL_ERROR, error: data.data.error})
+                        throw data.data.error
+                    }
                     const images = data.data.images.map(image => {
                         return new ExternalImage(image.link, image.image.contextLink, image.displayLink, image.image.width, image.image.height);
                     })
                     dispatchImagesAction({type: SEARCH_EXTERNAL_IMAGES, images, article_id: articlesCtx.articleToEdit})
-                });
+                }).catch(error => {
+                console.log(error)
+            });
         }
     }, [imagesState.external.query])
 
@@ -219,18 +233,27 @@ const ImagesProvider = props => {
     }
 
     const loadMore = () => {
+
         let options = {
-            params: {search: imagesState.external.query, startIndex: imagesState.external.images[articlesCtx.articleToEdit].length+1}
+            params: {
+                search: imagesState.external.query,
+                startIndex: imagesState.external.images[articlesCtx.articleToEdit]?.length + 1
+            }
         }
         apiRequest('/api/resources', options)
             .then(data => {
+                if (data.data.images === undefined) {
+                    dispatchImagesAction({type: SET_EXTERNAL_ERROR, error: data.data.error})
+                    throw data.data.error
+                }
                 const images = data.data.images.map(image => {
                     return new ExternalImage(image.link, image.image.contextLink, image.displayLink, image.image.width, image.image.height);
                 })
                 dispatchImagesAction({type: LOAD_MORE_EXTERNAL_IMAGES, images, article_id: articlesCtx.articleToEdit})
-            });
+            }).catch(error => {
+            console.log(error)
+        });
     }
-
 
     const imagesContext = {
         relevant: {
@@ -247,6 +270,7 @@ const ImagesProvider = props => {
             query: imagesState.external.query,
             images: imagesState.external.images,
             loading: imagesState.external.loading,
+            error: imagesState.external.error,
             selected: {
                 loading: imagesState.external.selected.loading,
                 url: imagesState.external.selected.url,
@@ -262,7 +286,7 @@ const ImagesProvider = props => {
         selectExternalImage,
         setCropSection,
         cropImage,
-        loadMore
+        loadMore,
     }
 
     return (

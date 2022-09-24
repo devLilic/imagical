@@ -15,6 +15,7 @@ const ImagesContext = React.createContext({
         loading: false,
         images: {},
         query: '',
+        error: '',
         selected: {
             url: '',
             readyToCrop: false,
@@ -29,7 +30,7 @@ const ImagesContext = React.createContext({
     selectExternalImage: url => {},
     setCropSection: cropSection => {},
     cropImage: () => {},
-    loadMore: () => {}
+    loadMore: () => {},
 })
 
 export default ImagesContext;

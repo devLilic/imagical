@@ -16,7 +16,7 @@ const ImageEditorDialog = ({dialogOpen, handleDialog}) => {
         if (dialogOpen) {
             imagesCtx.searchRelevantImages(currentArticle[0].slug)
             let query = currentArticle[0][currentArticle[0].search_by]
-            imagesCtx.searchExternalImages(query);
+            // imagesCtx.searchExternalImages(query);
         }
     }, [dialogOpen])
 

@@ -6,7 +6,7 @@ import {
     EDIT_SEARCH,
     INIT_ARTICLES,
     SHOW_INTRO,
-    ADD_WALLPAPER, REMOVE_WALLPAPER, ADD_CUSTOM_TITLE
+    ADD_WALLPAPER, REMOVE_WALLPAPER, ADD_CUSTOM_TITLE, ADD_NEW_ARTICLE
 } from "@/Store/ArticleStore/article-actions";
 
 const article = {
@@ -29,12 +29,12 @@ const defaultArticlesState = ({
 })
 
 class Artcle {
-    constructor(title, slug, content, type) {
+    constructor(title, type, slug, content) {
         this.id = uuidv4();
         this.title = title;
-        this.slug = slug;
+        this.slug = slug? slug : title;
         this.custom = '';
-        this.content = content;
+        this.content = content? content: 'Fără conținut';
         this.type = type;
         this.search_by = 'slug';
         this.isIntroDisplayed = false;
@@ -51,19 +51,15 @@ const articlesReducer = (state, action) => {
             return {
                 articleToEdit: null,
                 articles: action.data.map(article => {
-                    return new Artcle(article.title, article.search_slug, article.content, article.type);
+                    return new Artcle(article.title,  article.type, article.search_slug, article.content);
                 })
             };
         case SHOW_INTRO:
             articles = state.articles.map(article => {
-                if (article.id === action.data) {
-                    article.isIntroDisplayed = !article.isIntroDisplayed;
-                } else {
-                    article.isIntroDisplayed = false;
-                }
+                article.isIntroDisplayed = (article.id === action.data) ? !article.isIntroDisplayed : false;
                 return article;
             });
-            return {...state, articles: articles}
+            return {...state, articles}
         case EDIT_SEARCH:
             articles = state.articles.map(article => {
                 if (article.id === action.data.id) {
@@ -99,6 +95,17 @@ const articlesReducer = (state, action) => {
                 return article;
             });
             return {...state, articles: articles}
+        case ADD_NEW_ARTICLE:
+            let key;
+            state.articles.map((article, k) => {
+                if(article.id === action.prevID){
+                    key = k;
+                }
+            })
+            const article = new Artcle(action.article.title, action.article.type)
+            articles = [...state.articles]
+            articles.splice(key+1, 0, article)
+            return {...state, articles};
         default:
             return defaultArticlesState;
     }
@@ -135,6 +142,10 @@ const ArticlesProvider = props => {
         dispatchArticlesAction({type: ADD_CUSTOM_TITLE, data: {id: article_id, custom_title: custom_title}})
     }
 
+    const addNewArticle = (title, type, prevID) => {
+        dispatchArticlesAction({type: ADD_NEW_ARTICLE, article: {title, type}, prevID})
+    }
+
     const articlesContext = {
         articles: articlesState.articles,
         articleToEdit: articlesState.articleToEdit,
@@ -144,8 +155,7 @@ const ArticlesProvider = props => {
         removeWallpaper: removeWallpaper,
         editSearch: editSearch,
         addCustomTitle: addCustomTitle,
-        removeArticle: (id) => {
-        }
+        addNewArticle,
     }
 
     return (

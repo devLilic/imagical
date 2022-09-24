@@ -6,6 +6,7 @@ use App\Models\Image;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Nette\Utils\Image as ImageProcessor;
 
@@ -93,15 +94,20 @@ class ExternalImagesController extends Controller {
             $config['start'] = request('startIndex');
         }
 
-        $response = Http::get(config('services.google_search.url'),  $config)->json();
+//        $response = Http::get(config('services.google_search.url'),  $config)->json();
+        $response = $this->testData();
 //
-//        $response = $this->testData();
-        $results = [
-            'images' => $response['items'],
-            'next_page' => $response['queries']['nextPage'][0]
-        ];
-
-        return $results;
+        if(array_key_exists('error', $response)){
+            Log::error('GOOGLE_ERROR: '.json_encode($response['error']));
+            return [
+                'error' => $response['error']['code'] === 429 ? "Limita de interogări la Google depășită": 'Ceva s-a intamplat si nu mai pot accesa Google'
+            ];
+        }else {
+            return [
+                'images' => $response['items'],
+                'next_page' => $response['queries']['nextPage'][0]
+            ];
+        }
     }
 
     protected function testData()

@@ -1,6 +1,5 @@
-import React, {useContext, useState} from 'react';
+import React from 'react';
 import {Button, Dialog as DialogMaterial, DialogBody, DialogFooter, DialogHeader} from "@material-tailwind/react"
-import ArticlesContext from "@/Store/ArticleStore/articles-context";
 
 const Dialog = ({
                     open,
@@ -10,7 +9,9 @@ const Dialog = ({
                     children,
                     closeBtn = false,
                     confirmBtn = false,
-                    cancelBtn = false
+                    cancelBtn = false,
+                    confirmText = '',
+                    confirmAction
                 }) => {
     return (
         <>
@@ -43,9 +44,9 @@ const Dialog = ({
                     {confirmBtn && <Button
                         variant="gradient"
                         color="green"
-                        onClick={handleDialog}
+                        onClick={confirmAction}
                     >
-                        <span>Confirm</span>
+                        <span>{confirmText ? confirmText : 'Confirm'}</span>
                     </Button>}
                 </DialogFooter>
             </DialogMaterial>

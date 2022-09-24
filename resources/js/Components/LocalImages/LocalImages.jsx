@@ -2,12 +2,12 @@ import React from 'react';
 import Loading from "@/Components/UI/Svg/Loading";
 import ImagesList from "@/Components/LocalImages/ImagesList";
 
-const LocalImages = ({images, title, onSelectImage, loading, cols, height}) => {
+const LocalImages = ({images, title, onSelectImage, loading, className}) => {
     return (
-        <div>
+        <div className='px-2'>
             {images.length > 0 && (<>
                 <h2>{title}</h2>
-                {loading ? <Loading/> : <ImagesList images={images} onSelectImage={onSelectImage} gridCols={cols} height={height}/>}
+                {loading ? <Loading/> : <ImagesList className={className} images={images} onSelectImage={onSelectImage}/>}
             </>)}
         </div>
     );

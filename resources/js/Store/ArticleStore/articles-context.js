@@ -8,6 +8,7 @@ const ArticlesContext = React.createContext({
     removeWallpaper: articleID => {},
     setSearchData: (articleID, searchBy, searchValue) => {},
     removeArticle: (articleID) => {},
+    addNewArticle: (title, type, prevID) => {}
 })
 
 export default ArticlesContext;
