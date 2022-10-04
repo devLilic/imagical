@@ -14,10 +14,8 @@ class LocalImagesController extends Controller {
 
     public function index()
     {
-        $take = request('takeImages');
-        $images = !!$take ?
-            Image::with('tags')->take((int) $take)->get() :
-            Image::with('tags')->latest()->get();
+        $take = request('takeImages') ? request('takeImages') : 24;
+        $images = Image::with('tags')->take((int) $take)->latest()->get();
         $images->map(fn($image) => $image->url = asset("images/$image->url"));
 
         return $images;

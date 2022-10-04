@@ -52,7 +52,7 @@ const LocalTab = ({onSelectImage}) => {
                                  images={imagesCtx.local.images}
                                  onSelectImage={onSelectImage}
                                  loading={imagesCtx.local.loading}
-                                 className='grid-cols-8 h-96'
+                                 className='grid-cols-6 h-full'
                     />
                 </div>
             </div>
