@@ -23,8 +23,13 @@
     },
     "dependencies": {
         "@material-tailwind/react": "^1.2.3",
+        "@types/jest": "^29.1.1",
+        "@types/node": "^18.8.1",
+        "@types/react": "^18.0.21",
+        "@types/react-dom": "^18.0.6",
         "file-saver": "^2.0.5",
         "react-image-crop": "^10.0.6",
+        "typescript": "^4.8.4",
         "uuid": "^8.3.2"
     }
 }

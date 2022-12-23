@@ -1,7 +1,14 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {Checkbox as MaterialCheckbox} from "@material-tailwind/react";
 
-const Checkbox = ({id, isChecked, value, onChange}) => {
+type PropsType = {
+    id: string,
+    isChecked: boolean,
+    value: string,
+    onChange: () => void
+}
+
+const Checkbox: FC<PropsType> = ({id, isChecked, value, onChange}) => {
     return (
         <MaterialCheckbox color="blue"
                           ripple={false}

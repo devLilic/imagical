@@ -1,7 +1,14 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {Button} from "@material-tailwind/react";
 
-const ArticleFooter = ({showIntro, editArticle, isIntroDisplayed, content}) => {
+type PropsType = {
+    showIntro: () => void,
+    editArticle: () => void,
+    isIntroDisplayed: boolean,
+    content: string
+}
+
+const ArticleFooter: FC<PropsType> = ({showIntro, editArticle, isIntroDisplayed, content}) => {
     return (
         <div
             className='mb-3 px-2 flex flex-col items-center justify-center border-t border-blue-500 border-dashed pt-3'>

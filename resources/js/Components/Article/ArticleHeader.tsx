@@ -1,7 +1,13 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {Button} from "@material-tailwind/react";
 
-const ArticleHeader = ({title, type, addArticle}) => {
+type PropsType = {
+    title: string
+    type: 'OFF' | 'BETA'
+    addArticle: () => void
+}
+
+const ArticleHeader: FC<PropsType> = ({title, type, addArticle}) => {
     return (
         <div className='px-3 py-2 text-sm font-bold bg-blue-500 text-white flex justify-between items-center'>
             <div className='h-12 flex items-center'>

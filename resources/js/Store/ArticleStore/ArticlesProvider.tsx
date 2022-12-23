@@ -8,27 +8,19 @@ import {
     SHOW_INTRO,
     ADD_WALLPAPER, REMOVE_WALLPAPER, ADD_CUSTOM_TITLE, ADD_NEW_ARTICLE
 } from "@/Store/ArticleStore/article-actions";
+import {ArticleType} from "../../types/ArticleType";
 
-const article = {
-    id: null, //uuid()
-    title: '',
-    slug: '',
-    custom: '',
-    content: '',
-    type: '', // BETA, OFF
-    search_by: 'slug',
-    showIntro: false,
-    images: {
-        wallpaper: 'https://706172616e74657a65.ultracdn.net/storage/gaze-naturale-900x505_1-1000.png',
-    }
-};
+type DefaultStateType = {
+    articles: ArticleType[]
+    articleToEdit: string | null
+}
 
-const defaultArticlesState = ({
+const defaultArticlesState: DefaultStateType = ({
     articles: [],
     articleToEdit: null
 })
 
-class Artcle {
+class Article {
     constructor(title, type, slug, content) {
         this.id = uuidv4();
         this.title = title;
@@ -44,14 +36,14 @@ class Artcle {
     }
 }
 
-const articlesReducer = (state, action) => {
+const articlesReducer: DefaultStateType = (state:DefaultStateType, action: any) => {
     let articles = {};
     switch (action.type) {
         case INIT_ARTICLES:
             return {
                 articleToEdit: null,
                 articles: action.data.map(article => {
-                    return new Artcle(article.title,  article.type, article.search_slug, article.content);
+                    return new Article(article.title,  article.type, article.search_slug, article.content);
                 })
             };
         case SHOW_INTRO:
@@ -102,7 +94,7 @@ const articlesReducer = (state, action) => {
                     key = k;
                 }
             })
-            const article = new Artcle(action.article.title, action.article.type)
+            const article = new Article(action.article.title, action.article.type)
             articles = [...state.articles]
             articles.splice(key+1, 0, article)
             return {...state, articles};
@@ -118,6 +110,9 @@ const ArticlesProvider = props => {
         dispatchArticlesAction({type: INIT_ARTICLES, data: props.articles})
     }, []);
 
+    type SetShowIntroActionType = {
+
+    }
     const setShowIntro = id => {
         dispatchArticlesAction({type: SHOW_INTRO, data: id});
     }

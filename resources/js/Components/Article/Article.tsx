@@ -9,7 +9,7 @@ import ArticleFooter from "@/Components/Article/ArticleFooter";
 import Checkbox from "@/Components/UI/FormElements/Checkbox";
 import Loading from "@/Components/UI/Svg/Loading";
 
-export default function Article({article, handleEditorDialog, handleNewArticleDialog, loading}) {
+const Article = ({article, handleEditorDialog, handleNewArticleDialog, loading}) => {
 
     const articlesCtx = useContext(ArticlesContext);
 
@@ -83,3 +83,5 @@ export default function Article({article, handleEditorDialog, handleNewArticleDi
         </Card>
     );
 }
+
+export default Article

@@ -1,18 +1,33 @@
-import React, {useEffect, useRef} from 'react';
+import React, {FC, useEffect, useRef} from 'react';
 
-export default function Input({
-                                  type = 'text',
-                                  name,
-                                  value,
-                                  className,
-                                  autoComplete,
-                                  required,
-                                  isDisabled,
-                                  isFocused,
-                                  handleChange,
-                                  placeholder,
-                              }) {
-    const input = useRef();
+
+type PropsType = {
+    type: string,
+    name: string,
+    value: string,
+    className: string,
+    autoComplete: string;
+    required: boolean,
+    isDisabled: boolean,
+    isFocused: boolean,
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => {},
+    placeholder: string
+}
+
+
+const Input: FC<PropsType> = ({
+                   type = 'text',
+                   name,
+                   value,
+                   className,
+                   autoComplete,
+                   required,
+                   isDisabled,
+                   isFocused,
+                   handleChange,
+                   placeholder,
+               }) => {
+    const input = useRef<HTMLInputElement>();
 
     useEffect(() => {
         if (isFocused) {
@@ -40,3 +55,5 @@ export default function Input({
         </div>
     );
 }
+
+export default Input;

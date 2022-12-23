@@ -1,12 +1,25 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import ApplicationLogo from '@/Components/UI/ApplicationLogo';
 import Dropdown from '@/Components/UI/FormElements/Dropdown';
 import NavLink from '@/Components/UI/Navigation/NavLink';
 import ResponsiveNavLink from '@/Components/UI/Navigation/ResponsiveNavLink';
-import { Link } from '@inertiajs/inertia-react';
+import {Link} from '@inertiajs/inertia-react';
 
-export default function Authenticated({ auth, header, children }) {
+export default function Authenticated({auth, header, children}) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+
+    type RouteType = {
+        route: string,
+        text: string
+    }
+
+    const routes: RouteType[] = [
+        {route: 'dashboard', text: 'Home'},
+        {route: 'titles', text: 'Telejurnal'},
+        {route: 'upload-images', text: 'Încarcă imagini'},
+        {route: 'all-images', text: 'Toate Imaginile'},
+        {route: 'settings', text: 'Setări'},
+    ]
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -16,29 +29,15 @@ export default function Authenticated({ auth, header, children }) {
                         <div className="flex">
                             <div className="shrink-0 flex items-center">
                                 <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto text-gray-500" />
+                                    <ApplicationLogo className="block h-9 w-auto text-gray-500"/>
                                 </Link>
                             </div>
 
                             <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink href={route('dashboard')} active={route().current('dashboard')}>
-                                    Home
-                                </NavLink>
-                                <NavLink href={route('titles')} active={route().current('titles')}>
-                                    Telejurnal
-                                </NavLink>
-
-                                <NavLink href={route('upload-images')} active={route().current('upload-images')}>
-                                    Încarcă imagini
-                                </NavLink>
-
-                                <NavLink href={route('all-images')} active={route().current('all-images')}>
-                                    Toate Imaginile
-                                </NavLink>
-
-                                <NavLink href={route('settings')} active={route().current('settings')}>
-                                    Setări
-                                </NavLink>
+                                {routes.map(route => (
+                                    <NavLink href={route('dashboard')} active={route().current('dashboard')}>
+                                        Home
+                                    </NavLink>))}
                             </div>
                         </div>
 

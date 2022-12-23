@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {FC, PropsWithChildren} from 'react';
 
-const Card = (props) => {
+const Card: FC<PropsWithChildren> = ({children}) => {
     return (
         <div className="my-3 rounded-sm rounded">
             <div className="border border-blue-300 rounded-sm">
-                {props.children}
+                {children}
             </div>
         </div>
     );
