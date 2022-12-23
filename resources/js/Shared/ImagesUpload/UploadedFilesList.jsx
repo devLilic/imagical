@@ -5,6 +5,8 @@ import {Button} from "@material-tailwind/react";
 const UploadedFilesList = () => {
     const filesCtx = useContext(FilesContext);
 
+
+
     return (
         <>
             {filesCtx.files.length !== 0 && (<div className='border border-blue-200 px-2 py-2'>

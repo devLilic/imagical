@@ -161,6 +161,7 @@ class LocalImagesController extends Controller {
             $image = Image::where('id', $request->image_id)->firstOrFail();
             $id = $image->id;
             Storage::disk('images')->delete($image->url);
+            $image->tags()->detach();
             $image->delete();
             if ($id !== 0) {
                 return ['image_id' => $id];

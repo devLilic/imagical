@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {useForm} from '@inertiajs/inertia-react';
 import UploadButton from "@/Components/UI/UploadButton/UploadButton";
 import PageContent from "@/Components/UI/PageContent";
+import PlaylistProvider from "@/Store/PlaylistStore/PlaylistProvider";
+import PlaylistsList from "@/Components/Playlist/PlaylistsList";
 
 const Upload = props => {
     const [isFileTypeOK, setIsFileTypeOK] = useState(false);
@@ -34,6 +36,9 @@ const Upload = props => {
                     </div>
                 </div>
             </form>
+            <PlaylistProvider>
+                <PlaylistsList />
+            </PlaylistProvider>
         </PageContent>
     );
 }

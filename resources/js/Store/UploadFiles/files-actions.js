@@ -4,4 +4,5 @@ export const VIEW_UPLOADED_FILES = 'VIEW_UPLOADED_FILES';
 export const DELETE_IMAGE = 'DELETE_IMAGE';
 export const ADD_TAGS = 'ADD_TAGS';
 export const SAVE_TAGS = 'SAVE_TAGS';
+export const INIT_IMAGES = 'INIT_IMAGES';
 

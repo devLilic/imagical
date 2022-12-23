@@ -1,9 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react'
 import ReactCrop from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
-import {canvasPreview} from './CanvasPreview'
-import {Button} from "@material-tailwind/react";
-import imagesProvider from "@/Store/LocalImagesStore/ImagesProvider";
 
 const defaultState = {
     img: '',

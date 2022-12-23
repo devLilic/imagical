@@ -3,8 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\FileUploadRequest;
+use App\Http\Resources\PlaylistCollection;
+use App\Http\Resources\PlaylistResource;
+use App\Models\Article;
+use App\Models\Playlist;
 use Facades\App\Services\Articles\ArticlesService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Illuminate\Support\Stringable;
 use Inertia\Inertia;
 
 class TitlesController extends Controller {
@@ -13,7 +20,7 @@ class TitlesController extends Controller {
     {
 //        $content = Storage::disk('test')->get('1300.HTM');
 //        $articles = ArticlesService::generate($content);
-
+//
         return Inertia::render('Titles/Upload', [
 //            'articles' => $articles
         ]);
@@ -21,11 +28,51 @@ class TitlesController extends Controller {
 
     public function store(FileUploadRequest $request)
     {
-        $content = $request->validated('file')->getContent();
+        $file = $request->validated('file');
+        $content = $file->getContent();
+        $title = Str::of($file->getClientOriginalName())->between('x', '.HTM')->value();
+
+        $playlist = Playlist::create([
+            'title' => $title,
+            'play_date' => now('Europe/Chisinau')
+        ]);
+
         $articles = ArticlesService::generate($content);
+
+        $playlist_order = 1;
+        foreach ($articles as $article) {
+            Article::create([
+                'title' => $article->title,
+                'tehno_title' => $article->search_slug,
+                'slugs' => Arr::join($article->slugs, '||'),
+                'intro' => $article->content,
+                'article_type' => $article->type,
+                'playlist_id' => $playlist->id,
+                'playlist_order' => $playlist_order++
+            ]);
+        }
 
         return Inertia::render('Titles/List', [
             'articles' => $articles
+        ]);
+    }
+
+    public function openPlaylist(Playlist $playlist)
+    {
+        $articles = $playlist->articles->map(fn ($article) => [
+                'id' => $article->id,
+                'slugs' => Str::of($article->slugs)->explode('||'),
+                'title' => $article->title,
+                'search_slug' => $article->tehno_title,
+                'type' => $article->article_type,
+                'other_title' => '',
+                'content' => $article->intro,
+                'search_by' => 'slug',
+                'playlist_order' => $article->playlist_order
+            ]);
+
+        return Inertia::render('Titles/List', [
+            'articles' => $articles->toArray()
         ]);
     }
 
@@ -53,6 +100,7 @@ class TitlesController extends Controller {
                 'images' => $response
             ];
         }
+
         return Inertia::render('Results/Results', [
             'articles' => $results
         ]);

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Tabs as MaterialTabs, Tab, TabPanel, TabsBody, TabsHeader} from "@material-tailwind/react";
+import {Tabs as MaterialTabs, Tab, TabsBody, TabsHeader} from "@material-tailwind/react";
 import LocalTab from "@/Shared/Dialogs/ImageEditor/LocalTab";
 import GoogleTab from "@/Shared/Dialogs/ImageEditor/GoogleTab";
 import UploadTab from "@/Shared/Dialogs/ImageEditor/UploadTab";
@@ -15,7 +15,7 @@ const Tabs = ({selectImage, hideDialog}) => {
             <TabsBody
                 animate={{
                     mount: {y: 0},
-                    unmount: {y: 250},
+                    unmount: {y: 100},
                 }}>
                 <LocalTab onSelectImage={selectImage}/>
                 <GoogleTab onSelectImage={selectImage} hideDialog={hideDialog}/>

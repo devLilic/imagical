@@ -90,7 +90,7 @@ class ExternalImagesController extends Controller {
         ];
 
 
-        if(request('startIndex')){
+        if(request('startIndex')!==0){
             $config['start'] = request('startIndex');
         }
 

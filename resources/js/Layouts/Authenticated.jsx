@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import ApplicationLogo from '@/Components/UI/ApplicationLogo';
+import ApplicationLogo from '@/Components/UI/Logo/ApplicationLogo';
 import Dropdown from '@/Components/UI/FormElements/Dropdown';
 import NavLink from '@/Components/UI/Navigation/NavLink';
 import ResponsiveNavLink from '@/Components/UI/Navigation/ResponsiveNavLink';
 import { Link } from '@inertiajs/inertia-react';
+
 
 export default function Authenticated({ auth, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
@@ -70,6 +71,9 @@ export default function Authenticated({ auth, header, children }) {
                                     </Dropdown.Trigger>
 
                                     <Dropdown.Content>
+                                        <Dropdown.Link href={route('settings')}>
+                                            Settings
+                                        </Dropdown.Link>
                                         <Dropdown.Link href={route('logout')} method="post" as="button">
                                             Log Out
                                         </Dropdown.Link>
@@ -125,12 +129,6 @@ export default function Authenticated({ auth, header, children }) {
                     </div>
                 </div>
             </nav>
-
-            {header && (
-                <header className="bg-white shadow">
-                    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">{header}</div>
-                </header>
-            )}
 
             <main>{children}</main>
         </div>

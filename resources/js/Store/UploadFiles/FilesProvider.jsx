@@ -2,13 +2,15 @@ import FilesContext from "@/Store/UploadFiles/files-context";
 import {useEffect, useReducer} from "react";
 import {
     ADD_FILES_TO_UPLOAD, ADD_TAGS,
-    DELETE_IMAGE, SAVE_TAGS,
+    DELETE_IMAGE, INIT_IMAGES, SAVE_TAGS,
     SET_FILES_LIMIT_EXCEED,
     VIEW_UPLOADED_FILES
 } from "@/Store/UploadFiles/files-actions";
 import apiRequest from "@/Helpers/Api";
+import {FileApi} from "@/api/file-api";
 
 const defaultFilesState = ({
+    images: [],
     filesToUpload: [],
     files: [],
     loading: false
@@ -17,6 +19,8 @@ const defaultFilesState = ({
 const filesReducer = (state, action) => {
     let files;
     switch (action.type) {
+        case INIT_IMAGES:
+            return {...state, files: action.files}
         case ADD_FILES_TO_UPLOAD:
             return {...state, filesToUpload: action.files, loading: true}
         case VIEW_UPLOADED_FILES:
@@ -53,6 +57,9 @@ const FilesProvider = props => {
     const MAX_UPLOADS = 10;
     const [filesState, dispatchFilesAction] = useReducer(filesReducer, defaultFilesState);
 
+    useEffect(()=>{
+        getFiles();
+    }, [])
     useEffect(() => {
         if (filesState.filesToUpload.length) {
             let formData = new FormData();
@@ -80,6 +87,14 @@ const FilesProvider = props => {
             })
         }
     }, [filesState.filesToUpload.length]);
+
+
+
+    const getFiles = async () => {
+        const files = await FileApi.getFiles()
+        dispatchFilesAction({type: INIT_IMAGES, files})
+        // console.log(files);
+    }
 
     const uploadImages = files => {
         const selectedFiles = Array.prototype.slice.call(files.target.files);

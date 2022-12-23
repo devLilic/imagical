@@ -1,5 +1,5 @@
 import React from 'react';
-import ApplicationLogo from '@/Components/UI/ApplicationLogo';
+import ApplicationLogo from '@/Components/UI/Logo/ApplicationLogo';
 import { Link } from '@inertiajs/inertia-react';
 
 export default function Guest({ children }) {

@@ -32,6 +32,8 @@ Route::middleware(['auth'])->group(function ()
     Route::get('allImages', [LocalImagesController::class, 'allImages'])->name('all-images');
     Route::get('settings', [SettingsController::class, 'deleteImagesWithoutTags'])->name('settings');
 
+    Route::get('playlist/{playlist}', [TitlesController::class, 'openPlaylist'])->name('playlist');
+
     Route::post('titles', [TitlesController::class, 'store']);
     Route::post('search', [TitlesController::class, 'search']);
     Route::get('search', function ()

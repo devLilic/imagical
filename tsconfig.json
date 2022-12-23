@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "sourceMap": true,
+        "paths": {
+            "@/*": ["resources/js/*"]
+        },
+        "lib": [
+            "es2015",
+            "DOM"
+        ],
+        "allowSyntheticDefaultImports": true,
+        "jsx": "react"
+    },
+    "include": ["resources/js"],
+    "exclude": [
+        "node_modules",
+        "public"
+    ]
+}

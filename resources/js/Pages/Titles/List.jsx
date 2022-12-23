@@ -1,8 +1,8 @@
 import React from 'react';
 import PageContent from "@/Components/UI/PageContent";
 import ArticlesProvider from "@/Store/ArticleStore/ArticlesProvider";
-import ArticlesList from "@/Shared/Articles/ArticlesList";
-import ImagesProvider from "@/Store/LocalImagesStore/ImagesProvider";
+import ArticlesList from "@/Components/Articles/ArticlesList";
+import ImagesProvider from "@/Store/ImagesStore/ImagesProvider";
 
 
 const List = props => {

@@ -2,11 +2,13 @@
 
 namespace App\Exceptions;
 
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
-class Handler extends ExceptionHandler
-{
+class Handler extends ExceptionHandler {
+
     /**
      * A list of exception types with their corresponding custom log levels.
      *
@@ -43,8 +45,18 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
+        $this->reportable(function (Throwable $e)
+        {
             //
         });
+    }
+
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof PlaylistNotFoundException) {
+            return response()->json(['data' => ['message' => 'Playlist Not Found']], 404);
+        }
+
+        return parent::render($request, $e);
     }
 }
